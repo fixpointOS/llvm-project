@@ -216,6 +216,8 @@ InputFile::InputFile(Kind k, MemoryBufferRef m)
     ++nextGroupId;
 }
 
+llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> lld::elf::elf_vfs {};
+
 std::optional<MemoryBufferRef> elf::readFile(StringRef path) {
   llvm::TimeTraceScope timeScope("Load input files", path);
 
@@ -250,8 +252,8 @@ std::optional<MemoryBufferRef> elf::readFile(StringRef path) {
   log(path);
   config->dependencyFiles.insert(llvm::CachedHashString(path));
 
-  auto mbOrErr = MemoryBuffer::getFile(path, /*IsText=*/false,
-                                       /*RequiresNullTerminator=*/false);
+  auto mbOrErr = elf_vfs ? elf_vfs->getBufferForFile(path)
+    : MemoryBuffer::getFile(path, /*IsText=*/false, /*RequiresNullTerminator=*/false);
   if (auto ec = mbOrErr.getError()) {
     error("cannot open " + path + ": " + ec.message());
     return std::nullopt;

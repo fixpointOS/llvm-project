@@ -19,6 +19,7 @@
 #include "llvm/Object/ELF.h"
 #include "llvm/Support/MemoryBufferRef.h"
 #include "llvm/Support/Threading.h"
+#include "llvm/Support/VirtualFileSystem.h"
 
 namespace llvm {
 struct DILineInfo;
@@ -41,6 +42,9 @@ class Symbol;
 
 // If --reproduce is specified, all input files are written to this tar archive.
 extern std::unique_ptr<llvm::TarWriter> tar;
+
+// Optional virtual filesystem for input
+extern llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> elf_vfs;
 
 // Opens a given file.
 std::optional<MemoryBufferRef> readFile(StringRef path);

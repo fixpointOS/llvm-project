@@ -164,6 +164,8 @@ bool link(ArrayRef<const char *> args, llvm::raw_ostream &stdoutOS,
 
   return errorCount() == 0;
 }
+
+void useVFS(llvm::IntrusiveRefCntPtr<llvm::vfs::FileSystem> vfs) { elf_vfs = vfs; }
 } // namespace elf
 } // namespace lld
 
